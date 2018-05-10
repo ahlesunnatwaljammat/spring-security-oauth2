@@ -6,16 +6,23 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public MapReactiveUserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("user")
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        UserDetails user = User.withUsername("admin")
+                .password(encoder.encode("x"))
                 .roles("USER")
                 .build();
         return new MapReactiveUserDetailsService(user);
